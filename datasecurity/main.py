@@ -22,7 +22,7 @@ def read_root():
     return {"message": "Welcome to the Data Security"}
 
 
-@app.post("/register_policy/")
+@app.post("/policies/")
 async def register_policy(file: UploadFile = File(...)):
     """
     Registers a policy in OPA from an uploaded Rego file.
@@ -59,7 +59,7 @@ def get_policies():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.delete("/delete-policy/{policy_name}")
+@app.delete("/policies/{policy_name}")
 async def delete_policy(policy_name: str):
     # Use the client to delete the policy; adjust this according to your OPA client implementation
     success = opa_client.delete_opa_policy(policy_name)
