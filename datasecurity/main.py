@@ -6,7 +6,7 @@ import os
 import sys
 
 from fastapi import FastAPI, HTTPException, File, UploadFile
-from opa_client.opa import OpaClient  # Import the OPA client library
+from opa_client.opa import OpaClient 
 import uvicorn
 import os
 
@@ -61,7 +61,7 @@ def get_policies():
 
 @app.delete("/policies/{policy_name}")
 async def delete_policy(policy_name: str):
-    # Use the client to delete the policy; adjust this according to your OPA client implementation
+
     success = opa_client.delete_opa_policy(policy_name)
     
     if success:

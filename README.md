@@ -35,3 +35,26 @@ This project is a FastAPI application that allows users to register and delete p
 
 The application will be available at http://127.0.0.1:8000
 
+## Usage
+
+### Register a Policy
+You can register a new policy by sending a POST request with the `.rego` file as form data.
+
+**Endpoint:** `POST /policies/`
+
+
+### List policies
+To get a list of all registered policies, send a GET request.
+
+**Endpoint:** `GET /policies/`
+
+
+### Delete a Policy
+To delete a policy, send a DELETE request with the policy name.
+
+**Endpoint:** `DELETE /{policy_name}/`
+
+
+## Documentation
+You can also consult the API documentation at /docs for more details on the available endpoints and their usage.
+
