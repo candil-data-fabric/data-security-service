@@ -45,40 +45,39 @@ You can also run the application in a Docker container:
 1. Build the Docker image:
 
    ```bash
-    docker build -t fastapi-opa-app .
+    docker build -t data_security_service .
 
 2. Run the container:
 
    ```bash
-    docker run -d -p 8007:8007 fastapi-opa-app
+    docker run -d -p 8007:8007 data_security_service
 
 ## Usage
+
+### List policies
+To get a list of all registered policies, send a GET request.
+
+**Endpoint:** `GET /policies`
+
+### Get Policy Content
+Retrieve the content of a specific policy. Optionally, download it as a .rego file by setting the as_file parameter to true.
+
+**Endpoint:** `GET /policies/{policy_name}/?as_file={true|false}`
 
 ### Register a Policy
 You can register a new policy by sending a POST request with the `.rego` file as form data.
 
 **Endpoint:** `POST /policies/{policy_name}`
 
-
-### List policies
-To get a list of all registered policies, send a GET request.
-
-**Endpoint:** `GET /policies/`
-
-### Get Policy Content
-Retrieve the content of a specific policy. Optionally, download it as a .rego file by setting the as_file parameter to true.
-
-**Endpoint:** GET /policies/{policy_name}/?as_file={true|false}
-
 ### Update a Policy
 You can update an existing policy by uploading a new .rego file with the same policy name.
 
-**Endpoint:** PUT /policies/{policy_name}
+**Endpoint:** `PUT /policies/{policy_name}`
 
 ### Delete a Policy
 To delete a policy, send a DELETE request with the policy name.
 
-**Endpoint:** `DELETE /{policy_name}/`
+**Endpoint:** `DELETE /{policy_name}`
 
 
 ## Documentation
