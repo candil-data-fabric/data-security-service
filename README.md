@@ -1,10 +1,13 @@
-# Data Security Policy Manager
+# Data Security Service
 
-This project is a FastAPI application that allows users to register and delete policies using the OPA (Open Policy Agent) client.
+This project is a FastAPI application that allows users to manage policies using the OPA (Open Policy Agent) client. It provides functionality to register, update, delete, and retrieve policies, including the option to download policies as .rego files.
 
 ## Features
 
-- Register policies from `.rego` files via a POST request.
+- Register policies from .rego files via a POST request.
+- Retrieve a policy's Rego content via a GET request, with an option to download it as a .rego file.
+- List all registered policies.
+- Update existing policies without needing to delete and re-upload them.
 - Delete policies using a DELETE request.
 - Built with FastAPI and OPA Client.
 
@@ -14,6 +17,7 @@ This project is a FastAPI application that allows users to register and delete p
 
 - Python 3.10 or higher
 - Poetry for dependency management
+- Docker (optional, if you want to run the app in a container)
 
 ### Setup
 
@@ -33,14 +37,27 @@ This project is a FastAPI application that allows users to register and delete p
    ```bash
     poetry run uvicorn datasecurity.main:app --reload
 
-The application will be available at http://127.0.0.1:8000
+The application will be available at http://127.0.0.1:8001
+
+### Docker Setup (Optional)
+You can also run the application in a Docker container:
+
+1. Build the Docker image:
+
+   ```bash
+    docker build -t fastapi-opa-app .
+
+2. Run the container:
+
+   ```bash
+    docker run -d -p 8007:8007 fastapi-opa-app
 
 ## Usage
 
 ### Register a Policy
 You can register a new policy by sending a POST request with the `.rego` file as form data.
 
-**Endpoint:** `POST /policies/`
+**Endpoint:** `POST /policies/{policy_name}`
 
 
 ### List policies
@@ -48,6 +65,15 @@ To get a list of all registered policies, send a GET request.
 
 **Endpoint:** `GET /policies/`
 
+### Get Policy Content
+Retrieve the content of a specific policy. Optionally, download it as a .rego file by setting the as_file parameter to true.
+
+**Endpoint:** GET /policies/{policy_name}/?as_file={true|false}
+
+### Update a Policy
+You can update an existing policy by uploading a new .rego file with the same policy name.
+
+**Endpoint:** PUT /policies/{policy_name}
 
 ### Delete a Policy
 To delete a policy, send a DELETE request with the policy name.
@@ -56,5 +82,7 @@ To delete a policy, send a DELETE request with the policy name.
 
 
 ## Documentation
-You can also consult the API documentation at /docs for more details on the available endpoints and their usage.
+You can consult the automatically generated API documentation at:
 
+- Swagger UI: http://127.0.0.1:8001/docs
+- ReDoc: http://127.0.0.1:8001/redoc
