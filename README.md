@@ -50,7 +50,7 @@ You can also run the application in a Docker container:
 2. Run the container:
 
    ```bash
-    docker run -d -p 8007:8007 data_security_service
+    docker run -d -p 8001:8001 data_security_service
 
 ## Usage
 
