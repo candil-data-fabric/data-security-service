@@ -14,10 +14,9 @@ import os
 # Initialize FastAPI app
 app = FastAPI()
 
-# Initialize OPA client, assuming OPA is running at http://localhost:8181
-opa_client = OpaClient()
+opa_client = OpaClient(host='opa', port=8181)
 
-OPA_URL = "http://localhost:8181/v1/policies/"
+OPA_URL = "http://opa:8181/v1/policies/"
 
 @app.get("/policies")
 def get_policies():
