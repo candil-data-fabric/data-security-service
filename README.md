@@ -11,6 +11,17 @@ This project is a FastAPI application that allows users to manage policies using
 - Delete policies using a DELETE request.
 - Built with FastAPI and OPA Client.
 
+### Environmental variables
+
+These are the environmental variables that can be configured:
+
+|  **Variable**  |                            **Description**                           |
+|:--------------:|:--------------------------------------------------------------------:|
+| `OPA_HOSTNAME` |       Hostname where the OPA service is running and reachable.       |
+|   `OPA_PORT`   | Port number (String) where the OPA service is running and reachable. |
+
+When installing the Helm Chart, upgrade it with a custom `myvalues.yaml` file where you define the environmental variables that you wish to override.
+
 ## Installation
 
 ### Prerequisites
