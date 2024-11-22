@@ -1,6 +1,6 @@
 [tool.poetry]
-name = "DataSecurity"
-version = "0.1.0"
+name = "Data Security Service"
+version = "1.0.2"
 description = ""
 authors = ["Lucía Cabanillas Rodríguez"]
 
