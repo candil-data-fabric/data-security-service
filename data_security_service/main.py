@@ -1,5 +1,5 @@
 __name__ = "Data Security Service"
-__version__ = "1.0.0"
+__version__ = "1.0.2"
 
 import logging
 import sys
@@ -11,12 +11,23 @@ import requests
 import uvicorn
 import os
 
+## -- BEGIN CONSTANTS DECLARATION -- ##
+
+### OPA SERVICE INFORMATION ###
+
+OPA_HOSTNAME = os.getenv("OPA_HOSTNAME")
+OPA_PORT = os.getenv("OPA_PORT") # String, will be casted to Integer when needed.
+
+### --- ###
+
+## -- END CONSTANTS DECLARATION -- ##
+
 # Initialize FastAPI app
 app = FastAPI()
 
-opa_client = OpaClient(host='opa', port=8181)
+opa_client = OpaClient(host=OPA_HOSTNAME, port=int(OPA_PORT))
 
-OPA_URL = "http://opa:8181/v1/policies/"
+OPA_URL = "http://" + OPA_HOSTNAME + ":" + OPA_PORT + "/v1/policies/"
 
 @app.get("/policies")
 def get_policies():
