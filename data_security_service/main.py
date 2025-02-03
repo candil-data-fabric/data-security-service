@@ -86,7 +86,7 @@ OPA_URL = "http://" + OPA_HOSTNAME + ":" + OPA_PORT + "/v1/policies/"
         }
     }
 )
-def get_policies() -> any:
+def get_policies():
     """
     Retrieves the list of registered policies.
     """
@@ -112,7 +112,7 @@ def get_policies() -> any:
         }
     }
 )
-def get_policy_content(policy_name: str, as_file: bool = False) -> any:
+def get_policy_content(policy_name: str, as_file: bool = False):
     """
     Retrieves the actual Rego content of a specific policy from OPA.
     """
@@ -154,7 +154,7 @@ def get_policy_content(policy_name: str, as_file: bool = False) -> any:
         }
     }
 )
-async def register_policy(policy_name: str, file: UploadFile = File(...)) -> any:
+async def register_policy(policy_name: str, file: UploadFile = File(...)):
     """
     Registers a policy in OPA from an uploaded Rego file.
     The policy name is provided as a path parameter.
@@ -189,7 +189,7 @@ async def register_policy(policy_name: str, file: UploadFile = File(...)) -> any
         }
     }
 )
-async def update_policy(policy_name: str, file: UploadFile = File(...)) -> any:
+async def update_policy(policy_name: str, file: UploadFile = File(...)):
     """
     Updates an existing policy in OPA from an uploaded Rego file.
     The policy name is provided as a path parameter.
@@ -224,7 +224,7 @@ async def update_policy(policy_name: str, file: UploadFile = File(...)) -> any:
         }
     }
 )
-async def delete_policy(policy_name: str) -> any:
+async def delete_policy(policy_name: str):
     success = opa_client.delete_opa_policy(policy_name)
     if success:
         return {"message": f"Policy '{policy_name}' deleted successfully"}
