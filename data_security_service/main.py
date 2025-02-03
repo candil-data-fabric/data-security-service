@@ -102,7 +102,7 @@ def get_policies():
     tags = ["Read"],
     responses = {
         status.HTTP_200_OK: {
-            "model": Union[GetPolicyResponse, FileResponse]
+            "model": GetPolicyResponse
         },
         status.HTTP_404_NOT_FOUND: {
             "model": str
