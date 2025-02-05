@@ -7,6 +7,7 @@ import logging
 from opa_client.opa import OpaClient
 from typing import Union
 import os
+import uuid
 from pydantic import BaseModel
 import requests
 import sys
@@ -34,29 +35,29 @@ class GetPoliciesResponse(BaseModel):
 
 class GetPolicyResponse(BaseModel):
     '''
-    Model for GET /policies/{policy_name} response.
+    Model for GET /policies/{policy_id} response.
     '''
 
-    policy_name: str
+    policy_id: str
     rego_content: str
 
 class RegisterPolicyResponse(BaseModel):
     '''
-    Model for POST /policies/{policy_name} response.
+    Model for POST /policies response.
     '''
 
     registered_policy: str
 
 class UpdatePolicyResponse(BaseModel):
     '''
-    Model for PUT /policies/{policy_name} response.
+    Model for PUT /policies/{policy_id} response.
     '''
 
     message: str
 
 class DeletePolicyResponse(BaseModel):
     '''
-    Model for DELETE /policies/{policy_name} response.
+    Model for DELETE /policies/{policy_id} response.
     '''
 
     message: str
@@ -97,7 +98,7 @@ def get_policies():
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get(
-    path = "/policies/{policy_name}",
+    path = "/policies/{policy_id}",
     description = "Retrieve policy contents.",
     tags = ["Read"],
     responses = {
@@ -112,29 +113,29 @@ def get_policies():
         }
     }
 )
-def get_policy_content(policy_name: str, as_file: bool = False):
+def get_policy_content(policy_id: str, as_file: bool = False):
     """
     Retrieves the actual Rego content of a specific policy from OPA.
     """
     try:
         # Make a direct API call to OPA to retrieve the policy content
-        response = requests.get(f"{OPA_URL}{policy_name}")
+        response = requests.get(f"{OPA_URL}{policy_id}")
         if response.status_code == 200:
             # Return the policy content if found
             policy_data = response.json()
             rego_content = policy_data.get("result", {}).get("raw", "")
             if as_file:
                 # Create a temporary .rego file to save the content
-                file_path = f"/tmp/{policy_name}.rego"
+                file_path = f"/tmp/{policy_id}.rego"
                 with open(file_path, "w") as rego_file:
                     rego_file.write(rego_content)
                 # Return the file as a downloadable response
-                return FileResponse(file_path, media_type="application/octet-stream", filename=f"{policy_name}.rego")
+                return FileResponse(file_path, media_type="application/octet-stream", filename=f"{policy_id}.rego")
             else:
-                return {"policy_name": policy_name, "rego_content": rego_content}
+                return {"policy_id": policy_id, "rego_content": rego_content}
         elif response.status_code == 404:
             # If policy is not found, raise a 404 HTTPException
-            raise HTTPException(status_code=404, detail=f"Policy '{policy_name}' not found.")
+            raise HTTPException(status_code=404, detail=f"Policy '{policy_id}' not found.")
         else:
             # Handle any other errors
             raise HTTPException(status_code=500, detail="Failed to retrieve the policy content.")
@@ -142,7 +143,7 @@ def get_policy_content(policy_name: str, as_file: bool = False):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post(
-    path = "/policies/{policy_name}",
+    path = "/policies",
     description = "Register policy.",
     tags = ["Create"],
     responses = {
@@ -154,10 +155,9 @@ def get_policy_content(policy_name: str, as_file: bool = False):
         }
     }
 )
-async def register_policy(policy_name: str, file: UploadFile = File(...)):
+async def register_policy(file: UploadFile = File(...)):
     """
     Registers a policy in OPA from an uploaded Rego file.
-    The policy name is provided as a path parameter.
     """
     try:
         # Read the contents of the uploaded file
@@ -166,18 +166,19 @@ async def register_policy(policy_name: str, file: UploadFile = File(...)):
         with open(file.filename, "wb") as f:
             f.write(contents)
         # Update the policy in OPA from the uploaded Rego file
-        response = opa_client.update_opa_policy_fromfile(file.filename, endpoint=policy_name)
+        policy_id = str(uuid.uuid4())
+        response = opa_client.update_opa_policy_fromfile(file.filename, endpoint=policy_id)
         # Clean up the temporary file
         os.remove(file.filename)
         if response:
-            return {"registered_policy": policy_name}
+            return {"registered_policy": policy_id}
         else:
             raise HTTPException(status_code=500, detail="Failed to register policy.")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.put(
-    path = "/policies/{policy_name}",
+    path = "/policies/{policy_id}",
     description = "Update an existing policy.",
     tags = ["Update"],
     responses = {
@@ -189,10 +190,10 @@ async def register_policy(policy_name: str, file: UploadFile = File(...)):
         }
     }
 )
-async def update_policy(policy_name: str, file: UploadFile = File(...)):
+async def update_policy(policy_id: str, file: UploadFile = File(...)):
     """
     Updates an existing policy in OPA from an uploaded Rego file.
-    The policy name is provided as a path parameter.
+    The policy id is provided as a path parameter.
     """
     try:
         # Read the contents of the uploaded file
@@ -201,18 +202,18 @@ async def update_policy(policy_name: str, file: UploadFile = File(...)):
         with open(file.filename, "wb") as f:
             f.write(contents)
         # Use the same method as POST to update the policy in OPA
-        response = opa_client.update_opa_policy_fromfile(file.filename, endpoint=policy_name)
+        response = opa_client.update_opa_policy_fromfile(file.filename, endpoint=policy_id)
         # Clean up the temporary file
         os.remove(file.filename)
         if response:
-            return {"message": f"Policy '{policy_name}' updated successfully"}
+            return {"message": f"Policy '{policy_id}' updated successfully"}
         else:
             raise HTTPException(status_code=500, detail="Failed to update policy.")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete(
-    path = "/policies/{policy_name}",
+    path = "/policies/{policy_id}",
     description = "Delete policy.",
     tags = ["Delete"],
     responses = {
@@ -224,12 +225,12 @@ async def update_policy(policy_name: str, file: UploadFile = File(...)):
         }
     }
 )
-async def delete_policy(policy_name: str):
-    success = opa_client.delete_opa_policy(policy_name)
+async def delete_policy(policy_id: str):
+    success = opa_client.delete_opa_policy(policy_id)
     if success:
-        return {"message": f"Policy '{policy_name}' deleted successfully"}
+        return {"message": f"Policy '{policy_id}' deleted successfully"}
     else:
-        raise HTTPException(status_code=404, detail=f"Policy '{policy_name}' not found")
+        raise HTTPException(status_code=404, detail=f"Policy '{policy_id}' not found")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8001)
