@@ -17,11 +17,9 @@ import uvicorn
 
 ### OPA SERVICE INFORMATION ###
 
-#OPA_HOSTNAME = os.getenv("OPA_HOSTNAME")
-#OPA_PORT = os.getenv("OPA_PORT") # String, will be casted to Integer when needed.
+OPA_HOSTNAME = os.getenv("OPA_HOSTNAME")
+OPA_PORT = os.getenv("OPA_PORT") # String, will be casted to Integer when needed.
 
-OPA_HOSTNAME = "192.168.159.240"
-OPA_PORT = "8181"
 ### --- ###
 
 ## -- END CONSTANTS DECLARATION -- ##
