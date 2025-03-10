@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Data Security Service"
-version = "1.1.0"
+version = "1.1.1"
 description = "Data Security Service component of the Data Fabric."
 authors = ["Lucía Cabanillas Rodríguez", "David Martínez García"]
 
