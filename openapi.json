@@ -1,1 +1,438 @@
-{"openapi":"3.1.0","info":{"title":"Data Security Service - REST API","version":"1.1.0"},"paths":{"/policies":{"get":{"tags":["Read"],"summary":"Get Policies","description":"Retrieve list of registered policies.","operationId":"get_policies_policies_get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/GetPoliciesResponse"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"string","title":"Response 500 Get Policies Policies Get"}}}}}},"post":{"tags":["Create"],"summary":"Register Policy","description":"Register policy.","operationId":"register_policy_policies_post","requestBody":{"content":{"multipart/form-data":{"schema":{"$ref":"#/components/schemas/Body_register_policy_policies_post"}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/RegisterPolicyResponse"}}}},"500":{"description":"Internal Server Error","content":{"application/json":{"schema":{"type":"string","title":"Response 500 Register Policy Policies Post"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/policies/{policy_id}":{"get":{"tags":["Read"],"summary":"Get Policy Content","description":"Retrieve policy contents.","operationId":"get_policy_content_policies__policy_id__get","parameters":[{"name":"policy_id","in":"path","required":true,"schema":{"type":"string","title":"Policy Id"}},{"name":"as_file","in":"query","required":false,"schema":{"type":"boolean","default":false,"title":"As File"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/GetPolicyResponse"}}}},"404":{"content":{"application/json":{"schema":{"type":"string","title":"Response 404 Get Policy Content Policies  Policy Id  Get"}}},"description":"Not Found"},"500":{"content":{"application/json":{"schema":{"type":"string","title":"Response 500 Get Policy Content Policies  Policy Id  Get"}}},"description":"Internal Server Error"},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"put":{"tags":["Update"],"summary":"Update Policy","description":"Update an existing policy.","operationId":"update_policy_policies__policy_id__put","parameters":[{"name":"policy_id","in":"path","required":true,"schema":{"type":"string","title":"Policy Id"}}],"requestBody":{"required":true,"content":{"multipart/form-data":{"schema":{"$ref":"#/components/schemas/Body_update_policy_policies__policy_id__put"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdatePolicyResponse"}}}},"500":{"content":{"application/json":{"schema":{"type":"string","title":"Response 500 Update Policy Policies  Policy Id  Put"}}},"description":"Internal Server Error"},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"delete":{"tags":["Delete"],"summary":"Delete Policy","description":"Delete policy.","operationId":"delete_policy_policies__policy_id__delete","parameters":[{"name":"policy_id","in":"path","required":true,"schema":{"type":"string","title":"Policy Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/DeletePolicyResponse"}}}},"404":{"content":{"application/json":{"schema":{"type":"string","title":"Response 404 Delete Policy Policies  Policy Id  Delete"}}},"description":"Not Found"},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}}},"components":{"schemas":{"Body_register_policy_policies_post":{"properties":{"file":{"type":"string","format":"binary","title":"File"}},"type":"object","required":["file"],"title":"Body_register_policy_policies_post"},"Body_update_policy_policies__policy_id__put":{"properties":{"file":{"type":"string","format":"binary","title":"File"}},"type":"object","required":["file"],"title":"Body_update_policy_policies__policy_id__put"},"DeletePolicyResponse":{"properties":{"message":{"type":"string","title":"Message"}},"type":"object","required":["message"],"title":"DeletePolicyResponse","description":"Model for DELETE /policies/{policy_id} response."},"GetPoliciesResponse":{"properties":{"policies":{"items":{"type":"string"},"type":"array","title":"Policies"}},"type":"object","required":["policies"],"title":"GetPoliciesResponse","description":"Model for GET /policies response."},"GetPolicyResponse":{"properties":{"policy_id":{"type":"string","title":"Policy Id"},"rego_content":{"type":"string","title":"Rego Content"}},"type":"object","required":["policy_id","rego_content"],"title":"GetPolicyResponse","description":"Model for GET /policies/{policy_id} response."},"HTTPValidationError":{"properties":{"detail":{"items":{"$ref":"#/components/schemas/ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"},"RegisterPolicyResponse":{"properties":{"registered_policy":{"type":"string","title":"Registered Policy"}},"type":"object","required":["registered_policy"],"title":"RegisterPolicyResponse","description":"Model for POST /policies response."},"UpdatePolicyResponse":{"properties":{"message":{"type":"string","title":"Message"}},"type":"object","required":["message"],"title":"UpdatePolicyResponse","description":"Model for PUT /policies/{policy_id} response."},"ValidationError":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"}}}}
+{
+    "openapi": "3.1.0",
+    "info": {
+      "title": "Data Security Service - REST API",
+      "version": "1.1.1"
+    },
+    "paths": {
+      "/policies": {
+        "get": {
+          "tags": [
+            "Read"
+          ],
+          "summary": "Get Policies",
+          "description": "Retrieve list of registered policies.",
+          "operationId": "get_policies_policies_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GetPoliciesResponse"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string",
+                    "title": "Response 500 Get Policies Policies Get"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "tags": [
+            "Create"
+          ],
+          "summary": "Register Policy",
+          "description": "Register policy.",
+          "operationId": "register_policy_policies_post",
+          "requestBody": {
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/Body_register_policy_policies_post"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RegisterPolicyResponse"
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string",
+                    "title": "Response 500 Register Policy Policies Post"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/policies/{policy_id}": {
+        "get": {
+          "tags": [
+            "Read"
+          ],
+          "summary": "Get Policy Content",
+          "description": "Retrieve policy contents.",
+          "operationId": "get_policy_content_policies__policy_id__get",
+          "parameters": [
+            {
+              "name": "policy_id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "title": "Policy Id"
+              }
+            },
+            {
+              "name": "as_file",
+              "in": "query",
+              "required": false,
+              "schema": {
+                "type": "boolean",
+                "default": false,
+                "title": "As File"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/GetPolicyResponse"
+                  }
+                }
+              }
+            },
+            "404": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string",
+                    "title": "Response 404 Get Policy Content Policies  Policy Id  Get"
+                  }
+                }
+              },
+              "description": "Not Found"
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            },
+            "500": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string",
+                    "title": "Response 500 Get Policy Content Policies  Policy Id  Get"
+                  }
+                }
+              },
+              "description": "Internal Server Error"
+            }
+          }
+        },
+        "put": {
+          "tags": [
+            "Update"
+          ],
+          "summary": "Update Policy",
+          "description": "Update an existing policy.",
+          "operationId": "update_policy_policies__policy_id__put",
+          "parameters": [
+            {
+              "name": "policy_id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "title": "Policy Id"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/Body_update_policy_policies__policy_id__put"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/UpdatePolicyResponse"
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            },
+            "500": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string",
+                    "title": "Response 500 Update Policy Policies  Policy Id  Put"
+                  }
+                }
+              },
+              "description": "Internal Server Error"
+            }
+          }
+        },
+        "delete": {
+          "tags": [
+            "Delete"
+          ],
+          "summary": "Delete Policy",
+          "description": "Delete policy.",
+          "operationId": "delete_policy_policies__policy_id__delete",
+          "parameters": [
+            {
+              "name": "policy_id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "title": "Policy Id"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/DeletePolicyResponse"
+                  }
+                }
+              }
+            },
+            "404": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "string",
+                    "title": "Response 404 Delete Policy Policies  Policy Id  Delete"
+                  }
+                }
+              },
+              "description": "Not Found"
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Body_register_policy_policies_post": {
+          "properties": {
+            "file": {
+              "type": "string",
+              "format": "binary",
+              "title": "File"
+            }
+          },
+          "type": "object",
+          "required": [
+            "file"
+          ],
+          "title": "Body_register_policy_policies_post"
+        },
+        "Body_update_policy_policies__policy_id__put": {
+          "properties": {
+            "file": {
+              "type": "string",
+              "format": "binary",
+              "title": "File"
+            }
+          },
+          "type": "object",
+          "required": [
+            "file"
+          ],
+          "title": "Body_update_policy_policies__policy_id__put"
+        },
+        "DeletePolicyResponse": {
+          "properties": {
+            "message": {
+              "type": "string",
+              "title": "Message"
+            }
+          },
+          "type": "object",
+          "required": [
+            "message"
+          ],
+          "title": "DeletePolicyResponse",
+          "description": "Model for DELETE /policies/{policy_id} response."
+        },
+        "GetPoliciesResponse": {
+          "properties": {
+            "policies": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "title": "Policies"
+            }
+          },
+          "type": "object",
+          "required": [
+            "policies"
+          ],
+          "title": "GetPoliciesResponse",
+          "description": "Model for GET /policies response."
+        },
+        "GetPolicyResponse": {
+          "properties": {
+            "policy_id": {
+              "type": "string",
+              "title": "Policy Id"
+            },
+            "rego_content": {
+              "type": "string",
+              "title": "Rego Content"
+            }
+          },
+          "type": "object",
+          "required": [
+            "policy_id",
+            "rego_content"
+          ],
+          "title": "GetPolicyResponse",
+          "description": "Model for GET /policies/{policy_id} response."
+        },
+        "HTTPValidationError": {
+          "properties": {
+            "detail": {
+              "items": {
+                "$ref": "#/components/schemas/ValidationError"
+              },
+              "type": "array",
+              "title": "Detail"
+            }
+          },
+          "type": "object",
+          "title": "HTTPValidationError"
+        },
+        "RegisterPolicyResponse": {
+          "properties": {
+            "registered_policy": {
+              "type": "string",
+              "title": "Registered Policy"
+            }
+          },
+          "type": "object",
+          "required": [
+            "registered_policy"
+          ],
+          "title": "RegisterPolicyResponse",
+          "description": "Model for POST /policies response."
+        },
+        "UpdatePolicyResponse": {
+          "properties": {
+            "message": {
+              "type": "string",
+              "title": "Message"
+            }
+          },
+          "type": "object",
+          "required": [
+            "message"
+          ],
+          "title": "UpdatePolicyResponse",
+          "description": "Model for PUT /policies/{policy_id} response."
+        },
+        "ValidationError": {
+          "properties": {
+            "loc": {
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ]
+              },
+              "type": "array",
+              "title": "Location"
+            },
+            "msg": {
+              "type": "string",
+              "title": "Message"
+            },
+            "type": {
+              "type": "string",
+              "title": "Error Type"
+            }
+          },
+          "type": "object",
+          "required": [
+            "loc",
+            "msg",
+            "type"
+          ],
+          "title": "ValidationError"
+        }
+      }
+    }
+  }

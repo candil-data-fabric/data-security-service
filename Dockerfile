@@ -1,5 +1,12 @@
+# Data Security Service - Dockerfile.
+
 # Stage 1: Builder - install dependencies using Poetry
 FROM python:3.11-slim AS builder
+
+# Some labels are defined to store metadata.
+LABEL image_version="1.1.1"
+LABEL app_version="1.1.1"
+LABEL maintainer="Lucía Cabanillas Rodríguez"
 
 # --- Install Poetry ---
 ARG POETRY_VERSION=1.8

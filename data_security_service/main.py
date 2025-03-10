@@ -1,5 +1,5 @@
 __name__ = "Data Security Service"
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 
 from fastapi import FastAPI, HTTPException, File, UploadFile, status
 from fastapi.responses import FileResponse
